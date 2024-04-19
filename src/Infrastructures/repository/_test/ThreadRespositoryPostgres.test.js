@@ -112,11 +112,16 @@ describe('ThreadRepositoryPostgres', () => {
         username: 'dicoding',
         password: 'secret_password',
       });
-
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
-      await ThreadTableTestHelper.addThread({ id: 'thread-1' });
+      const newThreadPayload = {
+        id: 'thread-1'
+      };
+      await ThreadTableTestHelper.addThread(newThreadPayload);
+      const thread = await threadRepositoryPostgres.verifyAvailableThread('thread-1')
 
       await expect(threadRepositoryPostgres.verifyAvailableThread('thread-1')).resolves.not.toThrowError(NotFoundError);
+
+      expect(thread).toBeGreaterThan(0);
     });
   });
 });

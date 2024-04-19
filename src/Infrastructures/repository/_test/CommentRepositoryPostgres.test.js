@@ -136,16 +136,18 @@ describe('CommentRepositoryPostgres', () => {
 
         let commentDetails = await commentRepositoryPostgres.getCommentsByThreadId('thread-1');
 
-        commentDetails = commentDetails.map((comment) => ({
-          id: comment.id,
-          content: comment.content,
-          date: comment.date,
-          username: comment.username,
-        }));
-
         expect(commentDetails).toEqual([
-          { ...firstComment, username: 'User' },
-          { ...secondComment, username: 'User' },
+          { ...firstComment,
+              username: 'User',
+              is_deleted: false,
+              owner: "user-1",
+              thread_id: "thread-1",
+          },
+          { ...secondComment,
+            username: 'User',
+            is_deleted: false,
+            owner: "user-1",
+            thread_id: "thread-1", },
         ]);
       });
 
@@ -207,6 +209,11 @@ describe('CommentRepositoryPostgres', () => {
             'thread-1',
           ),
         ).resolves.not.toThrowError(NotFoundError);
+
+        expect(await commentRepositoryPostgres.verifyAvailableCommentInThread(
+          'comment-1',
+          'thread-1',
+        )).toBeGreaterThan(0);
       });
     });
 

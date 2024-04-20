@@ -242,11 +242,12 @@ describe('CommentRepositoryPostgres', () => {
           {},
         );
 
-        await commentRepositoryPostgres.deleteCommentById('comment-1');
+        const deleteComment = await commentRepositoryPostgres.deleteCommentById('comment-1');
 
         const comment = await CommentsTableTestHelper.getCommentById(
           'comment-1',
         );
+        expect(deleteComment).toBeGreaterThan(0);
         expect(comment[0].is_deleted).toEqual(true);
       });
     });
